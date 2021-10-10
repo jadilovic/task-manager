@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
+import useLocalStorageHook from '../utils/useLocalStorageHook';
 import Card from '@mui/material/Card';
 import Alert from '@mui/material/Alert';
 import CardHeader from '@mui/material/CardHeader';
@@ -24,44 +26,56 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-const getRandomColor = () => {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-};
-
-const TaskCard = () => {
+const TaskCard = (props) => {
+  const history = useHistory();
+  const data = useLocalStorageHook();
+  const { task, setTasksList } = props;
+  const { name, dateCreated, currentStatus, description, avatarColor } = task;
   const [expanded, setExpanded] = useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
+  const deleteTask = (taskName) => {
+    data.deleteTaskAndUpdateTasksList(taskName);
+    setTasksList([...data.getAllTasks()]);
+  };
+
+  const handleOnClick = () => {};
+
   return (
     <Card sx={{ maxWidth: 645 }}>
       <CardHeader
         avatar={
-          <Avatar sx={{ bgcolor: getRandomColor() }} aria-label="recipe">
-            R
+          <Avatar sx={{ bgcolor: avatarColor }} aria-label="recipe">
+            {name.substring(0, 3)}
           </Avatar>
         }
         action={
-          <IconButton size="large" color="primary" aria-label="edit">
+          <IconButton
+            onClick={() => history.push('/edit')}
+            size="large"
+            color="primary"
+            aria-label="edit"
+          >
             <EditIcon />
           </IconButton>
         }
-        title="Shrimp and Chorizo Paella"
-        subheader={new Date().toDateString()}
+        title={name}
+        subheader={dateCreated}
       />
       <CardActions disableSpacing>
-        <IconButton size="large" color="error" aria-label="delete">
+        <IconButton
+          onClick={() => deleteTask(name)}
+          size="large"
+          color="error"
+          aria-label="delete"
+        >
           <DeleteIcon />
         </IconButton>
-        <Alert sx={{ flexGrow: 1 }} severity="info">
-          This is a warning alert — check it out!
+        <Alert sx={{ flexGrow: 1 }} severity={currentStatus.severity}>
+          {currentStatus.message}
         </Alert>
         <ExpandMore
           expand={expanded}
@@ -74,16 +88,8 @@ const TaskCard = () => {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography paragraph>Method:</Typography>
           <Typography paragraph>
-            Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet
-            over medium-high heat. Add chicken, shrimp and chorizo, and cook,
-            stirring occasionally until lightly browned, 6 to 8 minutes.
-            Transfer shrimp to a large plate and set aside, leaving chicken and
-            chorizo in the pan. Add pimentón, bay leaves, garlic, tomatoes,
-            onion, salt and pepper, and cook, stirring often until thickened and
-            fragrant, about 10 minutes. Add saffron broth and remaining 4 1/2
-            cups chicken broth; bring to a boil.
+            {description ? description : 'No description'}
           </Typography>
         </CardContent>
       </Collapse>

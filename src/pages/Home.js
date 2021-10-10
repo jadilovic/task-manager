@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import useLocalStorageHook from '../utils/useLocalStorageHook';
 import { useHistory } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import {
@@ -24,10 +25,25 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
+const getAvatarColor = () => {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+};
+
 const Home = () => {
+  const data = useLocalStorageHook();
+  const [tasksList, setTasksList] = useState([]);
   const [taskName, setTaskName] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const history = useHistory();
+
+  useEffect(() => {
+    setTasksList([...data.getAllTasks()]);
+  }, []);
 
   const handleChange = (e) => {
     e.preventDefault();
@@ -42,29 +58,36 @@ const Home = () => {
   const saveTaskObject = (enteredTaskName) => {
     const existingTask = checkIfTaskExists(enteredTaskName);
     if (existingTask) {
-      data.saveCurrentTaskObject(existingTask);
+      setErrorMessage('Task name -' + enteredTaskName + '- aleready exists.');
     } else {
       const newTask = {
+        // ON TOP OF THE LIST AND THEN CAN GO TO EDIT
         name: enteredTaskName,
-        dateCreated: new Date(),
-        currentStatus: 'idle',
+        dateCreated: new Date().toDateString(),
+        currentStatus: { message: 'Idle task', severity: 'error' },
         description: '',
+        avatarColor: getAvatarColor(),
       };
-      data.saveCurrentTaskObject(newPlayer);
-      data.addNewTaskObjectToArrayAndSave(newPlayer);
+      data.addNewTaskObjectToArrayAndSave(newTask);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrorMessage('');
-    if (taskName === '') {
+    const firstThreeCharacters = taskName.substring(0, 4);
+    if (!firstThreeCharacters.match(/^[a-z0-9]+$/i) || taskName.length < 3) {
       setErrorMessage('You must enter task name to create new task');
     } else {
       saveTaskObject(taskName);
-      history.push('/edit');
+      setTasksList([...data.getAllTasks()]);
     }
   };
+
+  useEffect(() => {
+    setTaskName('');
+  }, [tasksList]);
+
   return (
     <Container maxWidth="sm">
       <Box sx={{ flexGrow: 1 }}>
@@ -95,6 +118,7 @@ const Home = () => {
                         </Box>
                       )}
                       <TextField
+                        value={taskName}
                         fullWidth
                         label="New task"
                         id="fullWidth"
@@ -115,11 +139,13 @@ const Home = () => {
             </Item>
           </Grid>
           <Grid item xs={12}>
-            <Item>
-              <TaskCard />
-              <TaskCard />
-              <TaskCard />
-            </Item>
+            {tasksList.map((task) => {
+              return (
+                <Item>
+                  <TaskCard task={task} setTasksList={setTasksList} />
+                </Item>
+              );
+            })}
           </Grid>
         </Grid>
       </Box>
