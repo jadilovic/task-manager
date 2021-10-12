@@ -64,7 +64,7 @@ const Home = () => {
         // ON TOP OF THE LIST AND THEN CAN GO TO EDIT
         name: enteredTaskName,
         dateCreated: new Date().toDateString(),
-        currentStatus: { message: 'Idle task', severity: 'error' },
+        currentStatus: { id: 1, message: 'Idle task', severity: 'error' },
         description: '',
         avatarColor: getAvatarColor(),
       };

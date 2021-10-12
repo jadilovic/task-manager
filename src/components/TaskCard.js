@@ -42,7 +42,10 @@ const TaskCard = (props) => {
     setTasksList([...data.getAllTasks()]);
   };
 
-  const handleOnClick = () => {};
+  const handleOnClick = (taskName) => {
+    data.saveCurrentTaskName(taskName);
+    history.push('/edit');
+  };
 
   return (
     <Card sx={{ maxWidth: 645 }}>
@@ -54,7 +57,7 @@ const TaskCard = (props) => {
         }
         action={
           <IconButton
-            onClick={() => history.push('/edit')}
+            onClick={() => handleOnClick(name)}
             size="large"
             color="primary"
             aria-label="edit"

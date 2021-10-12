@@ -62,9 +62,7 @@ const useLocalStorageHook = () => {
 
   const getCurrentTaskObject = (taskName) => {
     const tasks = getAllTasks();
-    const currentTaskIndex = tasks.findIndex(
-      (task) => task.name == currentTask.name
-    );
+    const currentTaskIndex = tasks.findIndex((task) => task.name == taskName);
     return tasks[currentTaskIndex];
   };
 
@@ -87,6 +85,8 @@ const useLocalStorageHook = () => {
     addNewTaskObjectToArrayAndSave,
     addUpdatedCurrentTaskToArrayAndSave,
     deleteTaskAndUpdateTasksList,
+    saveCurrentTaskName,
+    getCurrentTaskObject,
   };
 };
 
