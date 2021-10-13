@@ -92,14 +92,14 @@ const Home = () => {
     <Container maxWidth="sm">
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={4}>
-          <Grid item xs={12}>
+          <Typography gutterBottom variant="h6" component="div">
+            Enter new task
+          </Typography>
+          <Grid justifyItems="center" item xs={12}>
             <Item>
               <Card>
                 <form noValidate autoComplete="off" onSubmit={handleSubmit}>
                   <CardContent>
-                    <Typography gutterBottom variant="h6" component="div">
-                      Enter new task
-                    </Typography>
                     <Box
                       sx={{
                         width: 500,

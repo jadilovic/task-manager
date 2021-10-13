@@ -28,6 +28,7 @@ const Form = () => {
   const history = useHistory();
   const data = useLocalStorageHook();
   const [formValues, setFormValues] = useState({});
+  const [taskId, setTaskId] = useState(0);
 
   const taskStatusesList = [
     { id: 1, message: 'Idle task', severity: 'error' },
@@ -37,7 +38,9 @@ const Form = () => {
 
   useEffect(() => {
     const taskName = localStorage.getItem('currentTaskName');
-    setFormValues(data.getCurrentTaskObject(taskName));
+    const editingTaskObject = data.getCurrentTaskObject(taskName);
+    setFormValues(editingTaskObject);
+    setTaskId(editingTaskObject.currentStatus.id);
   }, []);
 
   const handleInputChange = (e) => {
@@ -53,10 +56,11 @@ const Form = () => {
     console.log(formValues);
   };
 
-  const handleChange = (event) => {
+  const handleTaskStatusChange = (event) => {
+    setTaskId(event.target.value);
     setFormValues({
       ...formValues,
-      ['currentStatus']: taskStatusesList[event.target.value],
+      ['currentStatus']: taskStatusesList[event.target.value - 1],
     });
   };
 
@@ -66,9 +70,6 @@ const Form = () => {
     <Container maxWidth="sm">
       <Box sx={{ flexGrow: 1 }}>
         <Grid item xs={12}>
-          <Typography gutterBottom variant="h6" component="div">
-            Edit task
-          </Typography>
           <Item>
             <form onSubmit={handleSubmit}>
               <Grid
@@ -78,8 +79,14 @@ const Form = () => {
                 direction="column"
                 spacing={4}
               >
+                <Grid color="red" item xs={12}>
+                  <Typography gutterBottom variant="h6" component="div">
+                    Edit task
+                  </Typography>
+                </Grid>
                 <Grid item xs={12}>
                   <TextField
+                    style={{ minWidth: 300 }}
                     id="name-input"
                     name="name"
                     label="Name"
@@ -90,6 +97,7 @@ const Form = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
+                    style={{ minWidth: 300 }}
                     id="dateCreatedt"
                     name="dateCreated"
                     label="Date Created"
@@ -99,15 +107,13 @@ const Form = () => {
                     disabled
                   />
                 </Grid>
-                <Grid item>
-                  <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                <Grid item xs={12}>
+                  <FormControl style={{ minWidth: 300 }}>
+                    <InputLabel>Select current status</InputLabel>
                     <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={formValues?.currentStatus?.id}
+                      value={taskId}
                       label="Task current status"
-                      onChange={handleChange}
+                      onChange={handleTaskStatusChange}
                     >
                       {taskStatusesList.map((taskStatus) => {
                         return (
@@ -119,9 +125,17 @@ const Form = () => {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Button variant="contained" color="primary" type="submit">
-                  Submit
-                </Button>
+                <Grid item xs={12}>
+                  <Button
+                    style={{ minWidth: 300 }}
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    size="large"
+                  >
+                    Submit
+                  </Button>
+                </Grid>
               </Grid>
             </form>
           </Item>
