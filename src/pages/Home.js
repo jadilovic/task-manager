@@ -91,10 +91,23 @@ const Home = () => {
   return (
     <Container maxWidth="sm">
       <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={4}>
-          <Typography gutterBottom variant="h6" component="div">
-            Enter new task
-          </Typography>
+        <Grid
+          style={{ textAlign: 'center' }}
+          container
+          alignItems="center"
+          justify="center"
+          spacing={2}
+        >
+          <Grid color="black" item xs={12}>
+            <Typography
+              bgcolor="yellow"
+              gutterBottom
+              variant="h6"
+              component="div"
+            >
+              Task Manager App
+            </Typography>
+          </Grid>
           <Grid justifyItems="center" item xs={12}>
             <Item>
               <Card>

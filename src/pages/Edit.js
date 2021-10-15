@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+const data = useLocalStorageHook();
 import { useHistory } from 'react-router-dom';
 import useLocalStorageHook from '../utils/useLocalStorageHook';
 import { styled } from '@mui/material/styles';
@@ -28,7 +29,6 @@ const Form = () => {
   const history = useHistory();
   const data = useLocalStorageHook();
   const [formValues, setFormValues] = useState({});
-  const [taskId, setTaskId] = useState(0);
 
   const taskStatusesList = [
     { id: 1, message: 'Idle task', severity: 'error' },
@@ -40,7 +40,6 @@ const Form = () => {
     const taskName = localStorage.getItem('currentTaskName');
     const editingTaskObject = data.getCurrentTaskObject(taskName);
     setFormValues(editingTaskObject);
-    setTaskId(editingTaskObject.currentStatus.id);
   }, []);
 
   const handleInputChange = (e) => {
@@ -53,11 +52,12 @@ const Form = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    data.addUpdatedCurrentTaskToArrayAndSave(formValues);
     console.log(formValues);
+    history.push('/');
   };
 
   const handleTaskStatusChange = (event) => {
-    setTaskId(event.target.value);
     setFormValues({
       ...formValues,
       ['currentStatus']: taskStatusesList[event.target.value - 1],
@@ -66,6 +66,13 @@ const Form = () => {
 
   console.log('form values ', formValues);
 
+  if (
+    Object.keys(formValues).length === 0 &&
+    formValues.constructor === Object
+  ) {
+    console.log('loading');
+    return <Typography>Loading...</Typography>;
+  }
   return (
     <Container maxWidth="sm">
       <Box sx={{ flexGrow: 1 }}>
@@ -79,8 +86,13 @@ const Form = () => {
                 direction="column"
                 spacing={4}
               >
-                <Grid color="red" item xs={12}>
-                  <Typography gutterBottom variant="h6" component="div">
+                <Grid color="green" item xs={12}>
+                  <Typography
+                    bgcolor="yellow"
+                    gutterBottom
+                    variant="h6"
+                    component="div"
+                  >
                     Edit task
                   </Typography>
                 </Grid>
@@ -111,7 +123,7 @@ const Form = () => {
                   <FormControl style={{ minWidth: 300 }}>
                     <InputLabel>Select current status</InputLabel>
                     <Select
-                      value={taskId}
+                      value={formValues.currentStatus.id}
                       label="Task current status"
                       onChange={handleTaskStatusChange}
                     >
@@ -124,6 +136,20 @@ const Form = () => {
                       })}
                     </Select>
                   </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    multiline
+                    minRows={4}
+                    inputProps={{ maxLength: 120 }}
+                    style={{ minWidth: 300 }}
+                    id="description-input"
+                    name="description"
+                    label="Description"
+                    type="text"
+                    value={formValues.description}
+                    onChange={handleInputChange}
+                  />
                 </Grid>
                 <Grid item xs={12}>
                   <Button
