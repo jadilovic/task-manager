@@ -13,7 +13,6 @@ import {
   Button,
   Box,
   Paper,
-  Card,
   InputLabel,
   Typography,
 } from '@mui/material';
@@ -39,7 +38,9 @@ const Form = () => {
   useEffect(() => {
     const taskName = localStorage.getItem('currentTaskName');
     const editingTaskObject = data.getCurrentTaskObject(taskName);
-    setFormValues(editingTaskObject);
+    setFormValues({
+      ...editingTaskObject,
+    });
   }, []);
 
   const handleInputChange = (e) => {
@@ -73,6 +74,7 @@ const Form = () => {
     console.log('loading');
     return <Typography>Loading...</Typography>;
   }
+
   return (
     <Container maxWidth="sm">
       <Box sx={{ flexGrow: 1 }}>
