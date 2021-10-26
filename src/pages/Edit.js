@@ -27,7 +27,9 @@ const Item = styled(Paper)(({ theme }) => ({
 const Form = () => {
   const history = useHistory();
   const data = useLocalStorageHook();
-  const [formValues, setFormValues] = useState({});
+  const [formValues, setFormValues] = useState({
+    currentStatus: { id: 0, message: '', severity: '' },
+  });
 
   const taskStatusesList = [
     { id: 1, message: 'Idle task', severity: 'error' },
@@ -66,7 +68,7 @@ const Form = () => {
   };
 
   console.log('form values ', formValues);
-
+  /*
   if (
     Object.keys(formValues).length === 0 &&
     formValues.constructor === Object
@@ -74,7 +76,7 @@ const Form = () => {
     console.log('loading');
     return <Typography>Loading...</Typography>;
   }
-
+*/
   return (
     <Container maxWidth="sm">
       <Box sx={{ flexGrow: 1 }}>
