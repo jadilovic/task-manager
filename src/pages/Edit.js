@@ -28,7 +28,7 @@ const Form = () => {
   const history = useHistory();
   const data = useLocalStorageHook();
   const [formValues, setFormValues] = useState({
-    currentStatus: { id: 0, message: '', severity: '' },
+    currentStatus: { id: '', message: '', severity: '' },
   });
 
   const taskStatusesList = [
@@ -67,7 +67,10 @@ const Form = () => {
     });
   };
 
-  console.log('form values ', formValues);
+  console.log('form values name', formValues.name);
+  console.log('form values dateCreated', formValues.dateCreated);
+  console.log('form values status', formValues.currentStatus);
+
   /*
   if (
     Object.keys(formValues).length === 0 &&
@@ -77,6 +80,9 @@ const Form = () => {
     return <Typography>Loading...</Typography>;
   }
 */
+  // novi react projekat samo sa select
+  // state managment first
+  // zasto nije radilo material ui select
   return (
     <Container maxWidth="sm">
       <Box sx={{ flexGrow: 1 }}>
@@ -127,7 +133,7 @@ const Form = () => {
                   <FormControl style={{ minWidth: 300 }}>
                     <InputLabel>Select current status</InputLabel>
                     <Select
-                      value={formValues.currentStatus.id}
+                      value={formValues?.currentStatus?.id}
                       label="Task current status"
                       onChange={handleTaskStatusChange}
                     >
