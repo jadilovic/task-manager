@@ -71,18 +71,6 @@ const Form = () => {
   console.log('form values dateCreated', formValues.dateCreated);
   console.log('form values status', formValues.currentStatus);
 
-  /*
-  if (
-    Object.keys(formValues).length === 0 &&
-    formValues.constructor === Object
-  ) {
-    console.log('loading');
-    return <Typography>Loading...</Typography>;
-  }
-*/
-  // novi react projekat samo sa select
-  // state managment first
-  // zasto nije radilo material ui select
   return (
     <Container maxWidth="sm">
       <Box sx={{ flexGrow: 1 }}>
